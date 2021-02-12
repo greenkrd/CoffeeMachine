@@ -32,8 +32,8 @@ resources = {
 
 }
 
-MONEY = 0
 
+profit = 0
 
 # TODO: 1 input- report print resources
 # TODO: 2 check resources is sufficient
@@ -50,44 +50,40 @@ def proccess_coins():
     return total
 
 
-'''
-def check_resources(user_drink):
-    if resources['water'] >= MENU[user_drink]['ingredients']['water'] and resources['milk'] >= MENU[user_drink]['ingredients']['milk'] and resources['coffee'] >= MENU[user_drink]['ingredients']['coffee']:
-        resources['water'] -= MENU[user_drink]['ingredients']['water']
-        resources['milk'] -= MENU[user_drink]['ingredients']['milk']
-        resources['coffee'] -= MENU[user_drink]['ingredients']['coffee']
-        return True
-    else:
-        return False
-'''
-
 def check_resources(ingredients_drink):
-    for item in  ingredients_drink:
-        if ingredients_drink[item] >= resources[item]
+    for item in ingredients_drink:
+        if ingredients_drink[item] >= resources[item]:
             print(f"Sorry there is not enough {item}")
             return False
     return True
 
 
 
-def check_transaction():
-    if resources["cash"] >= MENU[user_drink]['cost']:
-        resources["cash"] -= MENU[user_drink]['cost']
+def check_transaction(money, drink_cost):
+    if money >= drink_cost:
+        change = round(money - drink_cost, 2)
+        print(f"Here is your change {change}")
+        global profit
+        profit += drink_cost
         return True
     else:
+        print("Sorry that`s not enough money. Money refunded")
         return False
 
 
+def make_coffee(drink_name, ingredients_drink):
+    for item in ingredients_drink:
+        resources[item] -= ingredients_drink[item]
+    print(f"Here is your {drink_name}. Enjoy!")
+
+
 def print_report():
-    print(f"Water:  {resources['water']}ml\nMilk: {resources['milk']}ml\nCoffee: {resources['coffee']}g\nMoney ${round(resources['cash'],2)}")
+    print(f"Water:  {resources['water']}ml\nMilk: {resources['milk']}ml\nCoffee: {resources['coffee']}g\nMoney ${profit}")
 
 def play():
     turn_off = False
-
     while not turn_off:
-
         choice = input("What would you like? (espresso/latte/cappuccino): ")
-
         if choice == 'report':
             print_report()
         elif choice == 'off':
@@ -96,11 +92,11 @@ def play():
             drink = MENU[choice]
             if check_resources(drink['ingredients']):
                 payment = proccess_coins()
-                if check_transaction(payment, drink['cost']:
-                print("Sorry not enough resources")
-                turn_off = True
-            else:
-                print(f"Enjoy your {choice}")
+                if check_transaction(payment, drink['cost']):
+                    make_coffee(choice, drink['ingredients'])
 
 
-check_resources(MENU['latte']['ingredients'])
+play()
+
+
+
